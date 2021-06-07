@@ -42,6 +42,11 @@ class Employee
      */
     private $Post;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Department::class, inversedBy="Employees")
+     */
+    private $department;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -103,6 +108,18 @@ class Employee
     public function setPost(string $Post): self
     {
         $this->Post = $Post;
+
+        return $this;
+    }
+
+    public function getDepartment(): ?Department
+    {
+        return $this->department;
+    }
+
+    public function setDepartment(?Department $department): self
+    {
+        $this->department = $department;
 
         return $this;
     }

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -42,6 +44,16 @@ class User
      * @ORM\Column(type="string", length=20, nullable=true)
      */
     private $Phone;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Package::class, mappedBy="userId", orphanRemoval=true)
+     */
+    private $parcels;
+
+    public function __construct()
+    {
+        $this->parcels = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -104,6 +116,36 @@ class User
     public function setPhone(?string $Phone): self
     {
         $this->Phone = $Phone;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Package[]
+     */
+    public function getParcels(): Collection
+    {
+        return $this->parcels;
+    }
+
+    public function addParcel(Package $parcel): self
+    {
+        if (!$this->parcels->contains($parcel)) {
+            $this->parcels[] = $parcel;
+            $parcel->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeParcel(Package $parcel): self
+    {
+        if ($this->parcels->removeElement($parcel)) {
+            // set the owning side to null (unless already changed)
+            if ($parcel->getUserId() === $this) {
+                $parcel->setUserId(null);
+            }
+        }
 
         return $this;
     }

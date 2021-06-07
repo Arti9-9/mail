@@ -47,6 +47,11 @@ class Extradition
      */
     private $extradition;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Package::class, mappedBy="extradition", cascade={"persist", "remove"})
+     */
+    private $package;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -120,6 +125,23 @@ class Extradition
     public function setExtradition(?\DateTimeInterface $extradition): self
     {
         $this->extradition = $extradition;
+
+        return $this;
+    }
+
+    public function getPackage(): ?Package
+    {
+        return $this->package;
+    }
+
+    public function setPackage(Package $package): self
+    {
+        // set the owning side of the relation if necessary
+        if ($package->getExtradition() !== $this) {
+            $package->setExtradition($this);
+        }
+
+        $this->package = $package;
 
         return $this;
     }
